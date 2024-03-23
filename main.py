@@ -77,15 +77,29 @@ def generate_planet_colours():
     return colours
 
 def generate_planet_texture(x, y, width, height, array_width, array_height, colours):
-    texture = [[colours[0] for _ in range(array_width)]
+    print(len(colours))
+    base = colours.pop(0)
+    texture = [[base for _ in range(array_width)]
                for _ in range(array_height)]
 
-    size_standard = min(array_width, array_height)
+    if len(colours) == 0:
+        return texture
 
-    for colour in colours[1:]:
+    size_standard = min(array_width, array_height)
+    sizes = [random.randint(4, max(size_standard // 5, 8))
+             for c in colours]
+
+    if len(colours) > 1:
+        # sort all colours by how large their splotches are, so that large splotches are always drawn behind small ones
+        combined = list(zip(colours, sizes))
+        combined_sorted = sorted(combined, key=lambda x: x[1], reverse=True)
+
+        colours, sizes = zip(*combined_sorted)
+
+    for index, colour in enumerate(colours):
         splotches = random.randint(size_standard // 10, size_standard)
 
-        size = random.randint(4, max(size_standard // 5, 8))
+        size = sizes[index]
         for splotch in range(splotches):
             size_mod = random.randint(0, size // 5)
             splotch_size = size + size_mod
@@ -127,9 +141,11 @@ def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = No
 
     planet_mask = generate_planet_mask(
         width, height, x, y, points, array_width, array_height, uniform, point_width, point_height)
-    image = apply_mask(image, planet_mask)
-    image = image_from_array(image)
-    image.save("output.png")
+    # image = apply_mask(image, planet_mask)
+    return image
 
 
-generate_planet(25, 25, array_width=192, array_height=108)
+image = generate_planet(25, 25, array_width=192,
+                        array_height=108, uniform=True)
+image = image_from_array(image)
+image.save("output.png")

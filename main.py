@@ -66,18 +66,18 @@ def generate_rgb_variations(rgb, num_variations, variance):
         variations.append(variation)
     return variations
 
-def generate_planet_colours():
+def generate_planet_colours(colour_variance):
     base = (random.randint(30, 255),
             random.randint(30, 255),
             random.randint(30, 255))
 
     colours = [base] + \
-        generate_rgb_variations(base, random.randint(0, 4), (35, 35, 35))
+        generate_rgb_variations(base, random.randint(
+            0, 4), (colour_variance, colour_variance, colour_variance))
 
     return colours
 
 def generate_planet_texture(x, y, width, height, array_width, array_height, colours):
-    print(len(colours))
     base = colours.pop(0)
     texture = [[base for _ in range(array_width)]
                for _ in range(array_height)]
@@ -116,7 +116,7 @@ def generate_planet_texture(x, y, width, height, array_width, array_height, colo
 
     return texture
 
-def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = None, array_width=None, array_height=None, points=random.randint(1, 3), point_width=None, point_height=None, uniform=False):
+def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = None, array_width=None, array_height=None, colour_variance=36, points=random.randint(1, 3), point_width=None, point_height=None, uniform=False):
     if array_width == None:
         array_width = width * 2
         array_height = height * 2
@@ -134,7 +134,7 @@ def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = No
                            array_height - math.floor(point_height / 2))
 
     if not colours:
-        colours = generate_planet_colours()
+        colours = generate_planet_colours(colour_variance)
 
     image = generate_planet_texture(
         x, y, width, height, array_width, array_height, colours)

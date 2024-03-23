@@ -5,7 +5,6 @@ import ctypes
 
 user32 = ctypes.windll.user32
 width, height = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-width, height = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 image = generate_planet(25, 25, array_width=width // 10,
                         array_height=height // 10, uniform=False, variations_amount=random.randint(1, 4))

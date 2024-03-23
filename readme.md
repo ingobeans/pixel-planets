@@ -21,6 +21,7 @@ The generate_planet function is the main function to generate planets. It takes 
 * uniform controls if planet is just a single circle or if it has some more shape to it
 * points, is used if planet isn't uniform. then thats how many different circles to combine for planet shape.
 * point_width and height are used to directly specify size of those points.
+* max_shape_stretch allows you to specify how much the planet's height can differ from width. 1 means it can be 100% more / less (so planet can be ex. double height)
 
 Example usage (also found in example.py):
 ```py

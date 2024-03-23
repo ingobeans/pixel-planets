@@ -119,7 +119,7 @@ def generate_planet_texture(x, y, width, height, array_width, array_height, colo
 
     return texture
 
-def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = None, array_width=None, array_height=None, colour_variance=36, variations_amount=None, points=random.randint(1, 3), point_width=None, point_height=None, uniform=False):
+def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = None, array_width=None, array_height=None, colour_variance=36, variations_amount=None, points=random.randint(1, 3), point_width=None, point_height=None, max_shape_stretch=0.2, uniform=False):
     """width and height control the planets size. 
 
     x and y, its position within the array. 
@@ -136,7 +136,9 @@ def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = No
 
     points, is used if planet isn't uniform. then thats how many different circles to combine for planet shape.
 
-    point_width and height are used to directly specify size of those points."""
+    point_width and height are used to directly specify size of those points.
+
+    max_shape_stretch allows you to specify how much the planet's height can differ from width. 1 means it can be 100% more / less (so planet can be ex. double height)"""
     if array_width == None:
         array_width = width * 2
         array_height = height * 2
@@ -144,8 +146,8 @@ def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = No
     if point_width == None:
         point_width = random.randint(math.ceil(min(width, height) / 3),
                                      min(width, height))
-        point_height = random.randint(math.ceil(min(width, height) / 3),
-                                      min(width, height))
+        point_height = round(point_width *
+                             random.uniform(1 - max_shape_stretch, 1 + max_shape_stretch))
 
     if x == None:
         x = random.randint(math.ceil(point_width / 2),

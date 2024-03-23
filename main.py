@@ -33,7 +33,7 @@ def image_from_array(array):
 
     return image
 
-def generate_planet_mask(width, height, points, array_width, array_height):
+def generate_planet_mask(width, height, points, array_width, array_height, uniform):
     planet_mask = [[(0, 0, 0) for _ in range(array_width)]
                    for _ in range(array_height)]
 
@@ -42,6 +42,12 @@ def generate_planet_mask(width, height, points, array_width, array_height):
 
     point_height = random.randint(math.ceil(min(width, height) / 3),
                                   min(width, height))
+
+    if uniform:
+        draw_ellipse(planet_mask, (array_width // 2, array_height // 2), point_width,
+                     point_height, (255, 255, 255))
+
+        return planet_mask
 
     x = random.randint(math.ceil(point_width / 2),
                        array_width - math.floor(point_width / 2))
@@ -57,17 +63,66 @@ def generate_planet_mask(width, height, points, array_width, array_height):
 
     return planet_mask
 
-def generate_planet(width=5, height=5, colour=(248, 128, 0), points=random.randint(1, 3), array_width=None, array_height=None):
+def generate_rgb_variation(rgb, variance):
+    r, g, b = rgb
+    vr, vg, vb = variance
+    new_r = min(max(0, r + random.randint(-vr, vr)), 255)
+    new_g = min(max(0, g + random.randint(-vg, vg)), 255)
+    new_b = min(max(0, b + random.randint(-vb, vb)), 255)
+    return new_r, new_g, new_b
+
+def generate_rgb_variations(rgb, num_variations, variance):
+    variations = []
+    for _ in range(num_variations):
+        variation = generate_rgb_variation(rgb, variance)
+        variations.append(variation)
+    return variations
+
+def generate_planet_colours():
+    base = (random.randint(30, 255),
+            random.randint(30, 255),
+            random.randint(30, 255))
+
+    colours = [base] + \
+        generate_rgb_variations(base, random.randint(0, 4), (35, 35, 35))
+
+    return colours
+
+def generate_planet_texture(width, height, array_width, array_height, colours):
+    texture = [[colours[0] for _ in range(array_width)]
+               for _ in range(array_height)]
+
+    size_standard = min(array_width, array_height)
+
+    for colour in colours[1:]:
+        splotches = random.randint(size_standard // 10, size_standard)
+
+        size = random.randint(4, max(size_standard // 5, 8))
+        for splotch in range(splotches):
+            size_mod = random.randint(0, size // 5)
+            splotch_size = size + size_mod
+            x = random.randint(
+                math.ceil(splotch_size / 2), array_width - math.ceil(splotch_size / 2))
+            y = random.randint(
+                math.ceil(splotch_size / 2), array_height - math.ceil(splotch_size / 2))
+
+            draw_ellipse(texture, (x, y), splotch_size, splotch_size, colour)
+
+    return texture
+
+def generate_planet(width=5, height=5, colours: list[tuple] = None, points=random.randint(1, 3), array_width=None, array_height=None, uniform=False):
     if array_width == None:
         array_width = width * 2
         array_height = height * 2
 
-    image = [[colour for _ in range(array_width)]
-             for _ in range(array_height)]
+    if not colours:
+        colours = generate_planet_colours()
+
+    image = generate_planet_texture(
+        width, height, array_width, array_height, colours)
 
     planet_mask = generate_planet_mask(
-        width, height, points, array_width, array_height)
-
+        width, height, points, array_width, array_height, uniform)
     image = apply_mask(image, planet_mask)
     image = image_from_array(image)
     image.save("output.png")

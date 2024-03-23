@@ -39,7 +39,7 @@ def generate_planet_mask(width, height, x, y, points, array_width, array_height,
 
     if uniform:
         draw_ellipse(planet_mask, (x, y), point_width,
-                     point_height, (255, 255, 255))
+                     point_width, (255, 255, 255))
 
         return planet_mask
 
@@ -94,7 +94,7 @@ def generate_planet_texture(x, y, width, height, array_width, array_height, colo
             splotch_y = random.randint(
                 math.ceil(splotch_size / 2), array_height - math.ceil(splotch_size / 2))
 
-            if splotch_x < x or splotch_x >= x + width or splotch_y < y or splotch_y >= y + height:
+            if splotch_x + splotch_size < x or splotch_x >= x + width or splotch_y + splotch_size < y or splotch_y >= y + height:
                 continue
 
             draw_ellipse(texture, (splotch_x, splotch_y),

@@ -1,7 +1,7 @@
 # Pixel Planets Generator
 
 Generate customizable simple pixely planets.
-![Autumn Planet](https://github.com/ingobeans/pixel-planets/blob/example_planets/autumn.png)
+![Autumn Planet](https://github.com/ingobeans/pixel-planets/blob/main/example_planets/autumn_hd.png)
 
 ## Installation
 

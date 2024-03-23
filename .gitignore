@@ -1,3 +1,5 @@
-__pycache__/
+**/__pycache__/
+pixelplanets.egg-info/
+build/
 output.png
 .vscode

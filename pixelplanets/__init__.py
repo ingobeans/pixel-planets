@@ -68,7 +68,7 @@ def generate_rgb_variations(rgb, num_variations, variance):
 
 def generate_planet_colours(colour_variance, variations_amount=None):
     if variations_amount == None:
-        random.randint(
+        variations_amount = random.randint(
             0, 4)
     base = (random.randint(30, 255),
             random.randint(30, 255),
@@ -120,6 +120,23 @@ def generate_planet_texture(x, y, width, height, array_width, array_height, colo
     return texture
 
 def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = None, array_width=None, array_height=None, colour_variance=36, variations_amount=None, points=random.randint(1, 3), point_width=None, point_height=None, uniform=False):
+    """width and height control the planets size. 
+
+    x and y, its position within the array. 
+
+    colours is an array of rgb tuples, which colours to use for details (first is base colour). 
+
+    array_width and height are dimensions of the array itself containing the planet. 
+
+    colour_variance is only used if colours isn't specified, if so, it determines how much the detail colours will vary from base colour. 
+
+    variations_amount is only used if colours isn't specified, if so, it determines are how many detail colours to use.
+
+    uniform controls if planet is just a single circle or if it has some more shape to it
+
+    points, is used if planet isn't uniform. then thats how many different circles to combine for planet shape.
+
+    point_width and height are used to directly specify size of those points."""
     if array_width == None:
         array_width = width * 2
         array_height = height * 2
@@ -146,9 +163,3 @@ def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = No
         width, height, x, y, points, array_width, array_height, uniform, point_width, point_height)
     image = apply_mask(image, planet_mask)
     return image
-
-
-image = generate_planet(25, 25, array_width=192,
-                        array_height=108, uniform=False)
-image = image_from_array(image)
-image.save("output.png")

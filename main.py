@@ -141,7 +141,7 @@ def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = No
 
     planet_mask = generate_planet_mask(
         width, height, x, y, points, array_width, array_height, uniform, point_width, point_height)
-    # image = apply_mask(image, planet_mask)
+    image = apply_mask(image, planet_mask)
     return image
 
 

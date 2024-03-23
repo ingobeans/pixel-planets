@@ -66,14 +66,17 @@ def generate_rgb_variations(rgb, num_variations, variance):
         variations.append(variation)
     return variations
 
-def generate_planet_colours(colour_variance):
+def generate_planet_colours(colour_variance, variations_amount=None):
+    if variations_amount == None:
+        random.randint(
+            0, 4)
     base = (random.randint(30, 255),
             random.randint(30, 255),
             random.randint(30, 255))
 
     colours = [base] + \
-        generate_rgb_variations(base, random.randint(
-            0, 4), (colour_variance, colour_variance, colour_variance))
+        generate_rgb_variations(
+            base, variations_amount, (colour_variance, colour_variance, colour_variance))
 
     return colours
 
@@ -116,7 +119,7 @@ def generate_planet_texture(x, y, width, height, array_width, array_height, colo
 
     return texture
 
-def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = None, array_width=None, array_height=None, colour_variance=36, points=random.randint(1, 3), point_width=None, point_height=None, uniform=False):
+def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = None, array_width=None, array_height=None, colour_variance=36, variations_amount=None, points=random.randint(1, 3), point_width=None, point_height=None, uniform=False):
     if array_width == None:
         array_width = width * 2
         array_height = height * 2
@@ -134,7 +137,7 @@ def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = No
                            array_height - math.floor(point_height / 2))
 
     if not colours:
-        colours = generate_planet_colours(colour_variance)
+        colours = generate_planet_colours(colour_variance, variations_amount)
 
     image = generate_planet_texture(
         x, y, width, height, array_width, array_height, colours)
@@ -146,6 +149,6 @@ def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = No
 
 
 image = generate_planet(25, 25, array_width=192,
-                        array_height=108, uniform=True)
+                        array_height=108, uniform=False)
 image = image_from_array(image)
 image.save("output.png")

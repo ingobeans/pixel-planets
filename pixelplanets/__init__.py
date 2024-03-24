@@ -9,7 +9,7 @@ def draw_ellipse(array, center, width, height, fill_value=1):
                 array[y][x] = fill_value
 
 def apply_mask(image, mask):
-    result = [[None] * len(image[0]) for _ in range(len(image))]  #
+    result = [[None] * len(image[0]) for _ in range(len(image))]
 
     for i in range(len(image)):
         for j in range(len(image[0])):
@@ -34,20 +34,18 @@ def image_from_array(array):
     return image
 
 def generate_planet_mask(width, height, x, y, points, array_width, array_height, uniform, point_width, point_height):
-    planet_mask = [[(0, 0, 0) for _ in range(array_width)]
-                   for _ in range(array_height)]
+    planet_mask = [[(0, 0, 0) for _ in range(array_width)] for _ in range(array_height)]
+    # generate empty matrix with size
 
     if uniform:
-        draw_ellipse(planet_mask, (x, y), point_width,
-                     point_width, (255, 255, 255))
+        draw_ellipse(planet_mask, (x, y), point_width, point_width, (255, 255, 255))
 
         return planet_mask
 
     for point in range(points):
         mod_x = random.randint(point_width // 5, point_width // 2)
         mod_y = random.randint(point_height // 5, point_height // 2)
-        draw_ellipse(planet_mask, (x + mod_x, y + mod_y), point_width,
-                     point_height, (255, 255, 255))
+        draw_ellipse(planet_mask, (x + mod_x, y + mod_y), point_width, point_height, (255, 255, 255))
 
     return planet_mask
 
@@ -74,23 +72,20 @@ def generate_planet_colours(colour_variance, variations_amount=None):
             random.randint(30, 255),
             random.randint(30, 255))
 
-    colours = [base] + \
-        generate_rgb_variations(
-            base, variations_amount, (colour_variance, colour_variance, colour_variance))
+    colours = [base] + generate_rgb_variations(base, variations_amount, (colour_variance, colour_variance, colour_variance))
 
     return colours
 
 def generate_planet_texture(x, y, width, height, array_width, array_height, colours):
     base = colours.pop(0)
-    texture = [[base for _ in range(array_width)]
-               for _ in range(array_height)]
+    texture = [[base for _ in range(array_width)] for _ in range(array_height)]
+    # generate empty matrix with size
 
     if len(colours) == 0:
         return texture
 
     size_standard = min(array_width, array_height)
-    sizes = [random.randint(4, max(size_standard // 5, 8))
-             for c in colours]
+    sizes = [random.randint(4, max(size_standard // 5, 8)) for c in colours]
 
     if len(colours) > 1:
         # sort all colours by how large their splotches are, so that large splotches are always drawn behind small ones
@@ -103,16 +98,20 @@ def generate_planet_texture(x, y, width, height, array_width, array_height, colo
         splotches = random.randint(size_standard // 10, size_standard)
 
         size = sizes[index]
-        for splotch in range(splotches):
+        for _ in range(splotches):
             size_mod = random.randint(0, size // 5)
             splotch_size = size + size_mod
-            splotch_x = random.randint(
-                math.ceil(splotch_size / 2), array_width - math.ceil(splotch_size / 2))
-            splotch_y = random.randint(
-                math.ceil(splotch_size / 2), array_height - math.ceil(splotch_size / 2))
+            splotch_x = random.randint(math.ceil(splotch_size / 2), array_width - math.ceil(splotch_size / 2))
+            splotch_y = random.randint(math.ceil(splotch_size / 2), array_height - math.ceil(splotch_size / 2))
 
-            if splotch_x + splotch_size < x or splotch_x >= x + width or splotch_y + splotch_size < y or splotch_y >= y + height:
+            if (splotch_x + splotch_size < x 
+                or splotch_x >= x + width 
+                or splotch_y + splotch_size < y 
+                or splotch_y >= y + height):
                 continue
+
+            # check if detail would be visible at all
+            # otherwise skip
 
             draw_ellipse(texture, (splotch_x, splotch_y),
                          splotch_size, splotch_size, colour)
@@ -139,29 +138,24 @@ def generate_planet(width=5, height=5, x=None, y=None, colours: list[tuple] = No
     point_width and height are used to directly specify size of those points.
 
     max_shape_stretch allows you to specify how much the planet's height can differ from width. 1 means it can be 100% more / less (so planet can be ex. double height)"""
+
     if array_width == None:
         array_width = width * 2
         array_height = height * 2
 
     if point_width == None:
-        point_width = random.randint(math.ceil(min(width, height) / 3),
-                                     min(width, height))
-        point_height = round(point_width *
-                             random.uniform(1 - max_shape_stretch, 1 + max_shape_stretch))
+        point_width = random.randint(math.ceil(min(width, height) / 3), min(width, height))
+        point_height = round(point_width * random.uniform(1 - max_shape_stretch, 1 + max_shape_stretch))
 
     if x == None:
-        x = random.randint(math.ceil(point_width / 2),
-                           array_width - math.floor(point_width / 2))
-        y = random.randint(math.ceil(point_height / 2),
-                           array_height - math.floor(point_height / 2))
+        x = random.randint(math.ceil(point_width / 2), array_width - math.floor(point_width / 2))
+        y = random.randint(math.ceil(point_height / 2), array_height - math.floor(point_height / 2))
 
     if not colours:
         colours = generate_planet_colours(colour_variance, variations_amount)
 
-    image = generate_planet_texture(
-        x, y, width, height, array_width, array_height, colours)
-
-    planet_mask = generate_planet_mask(
-        width, height, x, y, points, array_width, array_height, uniform, point_width, point_height)
+    image = generate_planet_texture(x, y, width, height, array_width, array_height, colours)
+    planet_mask = generate_planet_mask(width, height, x, y, points, array_width, array_height, uniform, point_width, point_height)
     image = apply_mask(image, planet_mask)
+    
     return image

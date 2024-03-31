@@ -27,8 +27,7 @@ Example usage (also found in example.py):
 ```py
 from pixelplanets import *
 
-image = generate_planet(25, 25, array_width=192,
-                        array_height=108, uniform=False)
+image = generate_planet(25, 25, array_width=192, array_height=108)
 image = image_from_array(image)
 image.save("output.png")
 ```
